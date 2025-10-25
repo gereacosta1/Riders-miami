@@ -1,0 +1,13 @@
+{
+  "name": "usedmoto-app",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "http-server -p 5173 .",
+    "build": "echo \"Build completed - static files ready\"",
+    "preview": "http-server dist -p 4173"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
