@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "title": "Roadster 500",
+    "category": "motorcycle",
+    "price": 5999,
+    "image": "/moto1.jpg",
+    "description": "Agile road motorcycle for daily rides.",
+    "specs": {
+      "engine": "500cc",
+      "weight": "168kg",
+      "warranty": "12 months"
+    },
+    "inStock": true,
+    "badge": "New"
+  },
+  {
+    "id": 2,
+    "title": "Volt XR E-Bike",
+    "category": "electric",
+    "price": 4999,
+    "image": "/moto2.jpg",
+    "description": "High-performance electric motorcycle.",
+    "specs": {
+      "range": "120km",
+      "power": "5kW",
+      "top-speed": "90km/h"
+    },
+    "inStock": true,
+    "badge": "12-Month Warranty"
+  },
+  {
+    "id": 3,
+    "title": "StreetGrip Tire 17",
+    "category": "wheels",
+    "price": 199,
+    "image": "/moto3.jpg",
+    "description": "Durable tire for urban grip.",
+    "specs": {
+      "size": "120/70 R17",
+      "compound": "dual"
+    },
+    "inStock": true,
+    "badge": "Bestseller"
+  },
+  {
+    "id": 4,
+    "title": "ThunderSound BT Speaker",
+    "category": "speakers",
+    "price": 149,
+    "image": "/moto4.jpg",
+    "description": "Compact, powerful Bluetooth speaker.",
+    "specs": {
+      "battery": "12h",
+      "waterproof": "IPX5"
+    },
+    "inStock": true,
+    "badge": "Hot"
+  },
+  {
+    "id": 5,
+    "title": "ThunderSound BT Speaker",
+    "category": "speakers",
+    "price": 149,
+    "image": "/moto5.jpg",
+    "description": "Compact, powerful Bluetooth speaker.",
+    "specs": {
+      "battery": "12h",
+      "waterproof": "IPX5"
+    },
+    "inStock": true,
+    "badge": "Hot"
+  },
+   {
+    "id": 6,
+    "title": "ThunderSound BT Speaker",
+    "category": "speakers",
+    "price": 149,
+    "image": "/moto6.jpg",
+    "description": "Compact, powerful Bluetooth speaker.",
+    "specs": {
+      "battery": "12h",
+      "waterproof": "IPX5"
+    },
+    "inStock": true,
+    "badge": "Hot"
+  }
+]

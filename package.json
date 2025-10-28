@@ -1,13 +1,19 @@
 {
-  "name": "usedmoto-app",
-  "private": true,
+  "name": "riders-miami",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "http-server -p 5173 .",
-    "build": "echo \"Build completed - static files ready\"",
-    "preview": "http-server dist -p 4173"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "@vitejs/plugin-react": "^4.1.0",
+    "vite": "^5.0.0"
   }
 }

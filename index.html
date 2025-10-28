@@ -1,34 +1,60 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UsedMoto - Motos Usadas</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riders Miami</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div id="root"></div>
+    <!-- Fonts + Bootstrap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Affirm -->
-  <script>
-    window._affirm_config = {
-      public_api_key: "{{ AFFIRM_PUBLIC_KEY }}",
-      script: "https://cdn1.affirm.com/js/v2/affirm.js",
-      locale: "es_ES"
-    };
-  </script>
-  <script async src="https://cdn1.affirm.com/js/v2/affirm.js"></script>
+    <!-- Favicon: NUNCA con /public delante -->
+    <link rel="icon" href="/logo-riders-chico.png">
 
-  <!-- React + Bootstrap -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+      :root {
+        --bg-1: #0b0f14;
+        --bg-2: #0f1318;
+        --text: rgba(255,255,255,0.92);
+        --muted: rgba(255,255,255,0.6);
+        --card: #141922;
+        --accent: #7b6cff;
+      }
+      html, body, #root { height: 100%; }
+      body { background: var(--bg-1); color: var(--text); font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      a { color: inherit; text-decoration: none; }
+      .btn-accent { background: var(--accent); color: #fff; border: 0; border-radius: 14px; padding: 10px 18px; }
+      .btn-accent:hover { opacity: .95; }
+      .card-dark { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; }
+      .hero {
+        position: relative;
+        min-height: 70vh;
+        /* HERO: usar un archivo que exista en /public, por ejemplo /hero.jpg  */
+        background: linear-gradient(to bottom, rgba(11,15,20,.6), rgba(11,15,20,.85)), url('/hero.jpg') center/cover no-repeat;
+        border-radius: 24px;
+      }
+      .hero h1 { font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.02em; }
+      .hero p { color: var(--muted); font-size: 18px; }
+      .rm-badge { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
+    </style>
 
-  <!-- Babel (una sola vez) + tu app JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script type="text/babel" data-presets="env,react" src="./app.jsx"></script>
-</body>
+    <!-- Affirm: usar MÓDULO para poder leer import.meta.env -->
+    <script type="module">
+      window._affirm_config = {
+        public_api_key: import.meta.env.VITE_AFFIRM_PUBLIC_KEY || "",
+        script: "https://cdn1.affirm.com/js/v2/affirm.js",
+        locale: "en_US"
+      };
+    </script>
+    <script async src="https://cdn1.affirm.com/js/v2/affirm.js"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

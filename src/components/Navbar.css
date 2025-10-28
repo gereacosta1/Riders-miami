@@ -1,0 +1,51 @@
+.navbar-riders {
+  transition: all 0.3s ease;
+}
+
+.brand {
+  color: #fff;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+}
+
+.brand:hover {
+  transform: scale(1.05);
+}
+
+.nav-links .nav-item {
+  position: relative;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-links .nav-item:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.nav-links .nav-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background-color: #7b6cff;
+  transition: width 0.3s ease;
+}
+
+.nav-links .nav-item:hover::after {
+  width: 100%;
+}
+
+.cart-btn {
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.cart-btn:hover {
+  transform: scale(1.1);
+  background: #7b6cff;
+  border-color: #7b6cff;
+}
