@@ -11,10 +11,10 @@ export default function Home() {
       <section className="container-narrow my-5">
         <div className="row g-3">
           {[
-            ['Flexible financing with Affirm','public/logo-affirm.png'],
-            ['Fast shipping','public/fast.jpg'],
-            ['12-month warranty','public/12meses.png'],
-            ['Premium support','public/logo-suport.jpg'],
+            ['Flexible financing with Affirm','/logo-affirm.png'],
+            ['Fast shipping','/fast.jpg'],
+            ['12-month warranty','/12meses.png'],
+            ['Premium support','/logo-suport.jpg'],
           ].map(([t,icon],i)=>(
             <div className="col-12 col-md-6 col-lg-3" key={i}>
               <div className="card-dark p-3 h-100 hover-raise d-flex flex-row gap-3 align-items-center">
