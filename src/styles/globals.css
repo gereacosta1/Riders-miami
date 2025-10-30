@@ -1,38 +1,152 @@
-
-* { box-sizing: border-box; }
-.container-narrow { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
-.shadow-soft { box-shadow: 0 10px 24px rgba(0,0,0,.25); }
-.hover-raise { transition: transform .2s ease, box-shadow .2s ease; }
-.hover-raise:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(0,0,0,.35); }
-.grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
-.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-
-
-
-
-
-
-.rm-footer { background: transparent; }
-.footer-divider { border-color: rgba(255,255,255,.08); margin: 0; }
-
-.footer-link {
-  color: rgba(255,255,255,.7);
-  text-decoration: none;
-  position: relative;
-  transition: color .2s ease, transform .2s ease;
+:root{
+  --gutter: clamp(16px, 3vw, 32px);   /* margen lateral responsive */
+  --content-max: 1200px;              /* 1280–1320 si querés más ancho */
 }
-.footer-link:hover {
-  color: #fff;
-  transform: translateY(-1px);
+
+/* --- Minimal Quick-View Modal --- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(4px);
 }
-.footer-link::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  height: 2px;
+.modal-card {
+  width: 100%; max-width: 720px;
+  background: #0f0f12; color: #eaeaec;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+  outline: none;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.modal-header h2 { font-size: 1.05rem; margin: 0; letter-spacing: .2px; }
+.modal-close {
+  border: 0; background: transparent; color: #eaeaec;
+  padding: 6px 10px; border-radius: 10px; cursor: pointer;
+}
+.modal-close:hover { background: rgba(255,255,255,.08); }
+
+.modal-body { display: grid; gap: 18px; padding: 18px; }
+@media (min-width: 760px) { .modal-body { grid-template-columns: 1fr 1.2fr; } }
+
+.modal-media {
+  background: rgba(255,255,255,.04);
+  border-radius: 12px; aspect-ratio: 1/1;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.modal-media img { width: 100%; height: 100%; object-fit: contain; }
+.modal-noimg { color: #a4a6ad; font-size: .9rem; }
+
+.modal-info { display: flex; flex-direction: column; min-width: 0; }
+.modal-category { color: #a4a6ad; font-size: .8rem; text-transform: lowercase; }
+.modal-price { font-size: 1.6rem; font-weight: 700; margin-top: 2px; }
+.modal-desc { margin: 10px 0 0; color: #d8d9de; line-height: 1.6; max-height: 8.5rem; overflow: hidden; }
+.modal-tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.modal-tag { font-size: .72rem; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.08); }
+
+.modal-actions { margin-top: auto; display: flex; gap: 10px; padding-top: 14px; }
+
+
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* antes: auto-fill 220px */
+  gap: 18px;
+}
+
+
+/* viewport de imagen consistente y responsive */
+.prod-media {
+  background: #0b0f14;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;     /* mantiene proporción */
+  max-height: 260px;       /* evita que crezca demasiado en pantallas grandes */
+}
+@media (max-width: 576px) { .prod-media { max-height: 220px; } }
+@media (min-width: 1200px) { .prod-media { max-height: 300px; } }
+
+.prod-media > img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;     /* usa 'cover' si prefieres recortar */
+}
+
+/* Oculta cualquier scrollbar visible */
+body {
+  overflow-x: hidden;
+}
+
+/* Opcional: para navegadores Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
   width: 0;
-  background: var(--accent);
-  transition: width .2s ease;
+  height: 0;
 }
-.footer-link:hover::after { width: 100%; }
+
+html, body {
+  overflow-x: hidden;
+}
+
+
+
+/* contenedor centrado que ya usas */
+.container-narrow{
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* opcional: contenedor genérico para secciones full-bleed */
+.container{
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* respira verticalmente */
+.section{ padding-block: clamp(16px, 3vw, 32px); }
+
+/* catálogos también con gutter */
+#catalog{ padding-left: var(--gutter); padding-right: var(--gutter); }
+
+.modal-actions .btn { border-radius: 14px; }          /* global para el modal */
+
+
+.rm-drawer {
+  position: fixed;
+  top: var(--gutter);
+  bottom: var(--gutter);
+  right: var(--gutter);
+  width: min(380px, calc(100vw - (var(--gutter) * 2)));
+  background: #111722;
+  border-left: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+  transition: transform 240ms cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+
+.modal-overlay{
+  background: rgba(0,0,0,.55);      /* antes: .6 + blur */
+  backdrop-filter: none;            /* ✅ sin blur = 0 jank */
+  transition: opacity 160ms ease;
+  opacity: 0;
+}
+.modal-overlay[aria-modal="true"]{ opacity: 1; }
+.modal-overlay{
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(2px);       /* de 4px -> 2px */
+}
