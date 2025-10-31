@@ -1,19 +1,21 @@
 // src/pages/Catalog.jsx
-import React, { useState } from "react";
-import products from "../data/products.json";
-import ProductGrid from "../components/ProductGrid";
-import ProductModal from "../components/ProductModal";
+import React, { useState, useMemo } from 'react';
+import productsRaw from '../data/products.json';
+import ProductGrid from '../components/ProductGrid';
+import ProductModal from '../components/ProductModal';
+import { normalizeProduct } from '../utils/normalizeProduct';
 
 export default function Catalog() {
   const [selected, setSelected] = useState(null);
+
+  // normalizar una sola vez
+  const products = useMemo(() => productsRaw.map(normalizeProduct), []);
 
   const handleView = (product) => setSelected(product);
   const handleClose = () => setSelected(null);
 
   const handleAddToCart = (product) => {
-    // aquí llama a tu lógica real de carrito si la tienes
-    console.log("Add to cart:", product);
-    // opcional: cerrar al agregar
+    console.log('Add to cart:', product);
     setSelected(null);
   };
 
@@ -22,7 +24,7 @@ export default function Catalog() {
       <section className="container-narrow my-4">
         <h1>Catalog</h1>
         <p className="text-white-50">
-          Explore motorcycles, electric rides, wheels & speakers.
+          Explore motorcycles, electric rides, wheels &amp; speakers.
         </p>
       </section>
 
