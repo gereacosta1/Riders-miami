@@ -73,22 +73,7 @@
   }
   ,
    {
-    "id": 7,
-    "title": "Freego Nova 5 Mid-Drive",
-    "category": "motorcycle",
-    "price": 5000,
-    "image": "/Freego-Nova-5-Mid-Drive.png",
-    "description": "Compact, powerful Bluetooth speaker.",
-    "specs": {
-      "battery": "12h",
-      "waterproof": "IPX5"
-    },
-    "inStock": true,
-    "badge": "Hot"
-  }
-  ,
-   {
-    "id": 8,
+    "id": 6,
     "title": "Freego Shotgun F2 Pro Max",
     "category": "motorcycle",
     "price": 3000,
@@ -103,7 +88,7 @@
   }
   ,
    {
-    "id": 9,
+    "id": 7,
     "title": "Freego Shotgun Prime F2 Pro",
     "category": "motorcycle",
     "price": 3800,
@@ -118,7 +103,7 @@
   }
   ,
    {
-    "id": 10,
+    "id": 8,
     "title": "Freego X2 Dirt Master Off-Road",
     "category": "motorcycle",
     "price": 4000,
@@ -133,7 +118,7 @@
   }
   ,
    {
-    "id": 11,
+    "id": 9,
     "title": "Segway Ninebot S2 Self-Balancing Scooter",
     "category": "scooter",
     "price": 150,
