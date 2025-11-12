@@ -1,3 +1,4 @@
+// src/pages/Checkout.jsx
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { usd } from '../utils/currency';
