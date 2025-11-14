@@ -45,7 +45,7 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
 
   return {
     merchant: {
-      name: 'SUNRISE STORE',
+      name: 'Riders Miami',
       user_confirmation_url: window.location.origin + '/affirm/confirm',
       user_cancel_url: window.location.origin + '/affirm/cancel',
       user_confirmation_url_action: 'GET',
