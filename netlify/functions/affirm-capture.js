@@ -1,4 +1,4 @@
-
+// netlify/functions/affirm-capture.js
 export async function handler(event) {
   try {
     if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }

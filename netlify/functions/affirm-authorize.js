@@ -1,4 +1,4 @@
-
+// netlify/functions/affirm-authorize.js
 export async function handler(event) {
   try {
     if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' }

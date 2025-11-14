@@ -1,3 +1,4 @@
+// src/components/CartDrawer.jsx
 import React, { useState, memo } from 'react'
 import { useCart } from '../context/CartContext'
 import { usd } from '../utils/currency'
