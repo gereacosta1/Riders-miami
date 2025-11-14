@@ -19,4 +19,6 @@ export function initAffirm() {
   window.affirm.config(window._affirm_config);
 
   console.log('[Affirm] Config cargada con Public Key:', publicKey);
+  console.log('[Affirm] Public key en frontend:', import.meta.env.VITE_AFFIRM_PUBLIC_KEY);
+
 }
