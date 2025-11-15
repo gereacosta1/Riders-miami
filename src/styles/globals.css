@@ -1,6 +1,7 @@
-:root{
-  --gutter: clamp(16px, 3vw, 32px);   /* margen lateral responsive */
-  --content-max: 1200px;              /* 1280–1320 si querés más ancho */
+:root {
+  --gutter: clamp(16px, 3vw, 32px);
+  --content-max: 1200px;
+  --header-h: 64px;          /* altura aprox del navbar sticky */
 }
 
 /* --- Minimal Quick-View Modal --- */
@@ -133,25 +134,32 @@ html, body {
 .modal-actions .btn { border-radius: 14px; }          /* global para el modal */
 
 
+/* Drawer del carrito */
 .rm-drawer {
   position: fixed;
-  top: var(--gutter);
+
+  /* 👉 empieza debajo del header sticky */
+  top: calc(var(--header-h) + var(--gutter));
   bottom: var(--gutter);
   right: var(--gutter);
+
   width: min(380px, calc(100vw - (var(--gutter) * 2)));
   background: #111722;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   overflow: hidden;
-  z-index: 1050;
+  z-index: 1100; /* header sigue arriba (1200), pero ya no se pisan */
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-  transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 240ms cubic-bezier(.22,.61,.36,1);
   will-change: transform;
   backface-visibility: hidden;
 }
+
 
 
 .modal-overlay{
