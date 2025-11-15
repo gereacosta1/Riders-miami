@@ -7,7 +7,10 @@ export async function handler(event) {
 
     const { checkout_token } = JSON.parse(event.body || '{}');
     if (!checkout_token) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing checkout_token' }) };
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing checkout_token' }),
+      };
     }
 
     const key = `${process.env.AFFIRM_PUBLIC_KEY}:${process.env.AFFIRM_PRIVATE_KEY}`;
@@ -19,7 +22,7 @@ export async function handler(event) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': auth,
+          Authorization: auth,
         },
         body: JSON.stringify({ checkout_token }),
       }
@@ -39,13 +42,13 @@ export async function handler(event) {
           error: 'authorize_failed',
           affirm_code: errJson?.code || null,
           affirm_message: errJson?.message || null,
-          // para debug si hace falta ver más en logs:
           raw: text,
         }),
       };
     }
 
-    const data = JSON.parse(text); // expected { id, status, ... }
+    const data = JSON.parse(text); // { id, status, ... }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ charge_id: data.id, status: data.status }),

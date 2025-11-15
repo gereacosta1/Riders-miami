@@ -5,18 +5,33 @@
 
 /* --- Minimal Quick-View Modal --- */
 .modal-overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 1rem;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+  transition: opacity 160ms ease;
+  opacity: 0;
+  pointer-events: none; /* ✅ no bloquea clicks cuando está “cerrado” */
 }
+
+.modal-overlay[aria-modal="true"] {
+  opacity: 1;
+  pointer-events: auto; /* ✅ sólo intercepta clicks cuando el modal está activo */
+}
+
 .modal-card {
-  width: 100%; max-width: 720px;
-  background: #0f0f12; color: #eaeaec;
-  border: 1px solid rgba(255,255,255,.08);
+  width: 100%;
+  max-width: 720px;
+  background: #0f0f12;
+  color: #eaeaec;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   outline: none;
 }
 .modal-header {
@@ -125,15 +140,15 @@ html, body {
   right: var(--gutter);
   width: min(380px, calc(100vw - (var(--gutter) * 2)));
   background: #111722;
-  border-left: 1px solid rgba(255,255,255,.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   overflow: hidden;
   z-index: 1050;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 10px 30px rgba(0,0,0,.45);
-  transition: transform 240ms cubic-bezier(.22,.61,.36,1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   backface-visibility: hidden;
 }

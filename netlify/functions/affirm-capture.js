@@ -7,7 +7,10 @@ export async function handler(event) {
 
     const { charge_id } = JSON.parse(event.body || '{}');
     if (!charge_id) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing charge_id' }) };
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing charge_id' }),
+      };
     }
 
     const key = `${process.env.AFFIRM_PUBLIC_KEY}:${process.env.AFFIRM_PRIVATE_KEY}`;
@@ -21,7 +24,7 @@ export async function handler(event) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': auth,
+          Authorization: auth,
         },
       }
     );
@@ -45,7 +48,8 @@ export async function handler(event) {
       };
     }
 
-    const data = JSON.parse(text); // expected { id, status, ... }
+    const data = JSON.parse(text); // { id, status, ... }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ status: data.status || 'captured' }),
