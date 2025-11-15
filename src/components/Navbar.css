@@ -1,17 +1,22 @@
+/* src/components/Navbar.css */
+
 .navbar-riders {
   transition: all 0.3s ease;
 }
 
+/* Marca (logo + texto) */
 .brand {
   color: #fff;
   font-weight: 600;
   transition: transform 0.3s ease;
+  text-decoration: none;
 }
 
 .brand:hover {
   transform: scale(1.05);
 }
 
+/* Links de navegación */
 .nav-links .nav-item {
   position: relative;
   color: rgba(255, 255, 255, 0.7);
@@ -40,6 +45,7 @@
   width: 100%;
 }
 
+/* Botón de carrito */
 .cart-btn {
   transition: transform 0.3s ease, background 0.3s ease;
 }
