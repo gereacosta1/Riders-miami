@@ -10,35 +10,73 @@ export default function CartDrawer({ open, onClose }) {
   const [error, setError] = useState('')
 
   const handleCheckout = async () => {
-    setError('')
-    setLoading(true)
-    try {
-      const checkout = buildAffirmCheckout(items, totals)
-      const res = await openAffirmCheckout(checkout)
-      const okAuth = await fetch('/.netlify/functions/affirm-authorize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ checkout_token: res.checkout_token })
-      })
-      const authData = await okAuth.json()
-      if (!okAuth.ok) throw new Error(authData?.error || 'authorize_failed')
+  setError('');
+  setLoading(true);
 
-      const cap = await fetch('/.netlify/functions/affirm-capture', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ charge_id: authData.charge_id })
-      })
-      const capData = await cap.json()
-      if (!cap.ok) throw new Error(capData?.error || 'capture_failed')
+  try {
+    const checkout = buildAffirmCheckout(items, totals);
+    const res = await openAffirmCheckout(checkout);
 
-      clearCart()
-      window.location.href = '/order-confirmed'
-    } catch (e) {
-      setError(e.message || 'Checkout error')
-    } finally {
-      setLoading(false)
+    // Si el usuario cerró sin completar, openAffirmCheckout lanza un error.
+    // No llegamos a esta línea en ese caso.
+
+    const okAuth = await fetch('/.netlify/functions/affirm-authorize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ checkout_token: res.checkout_token }),
+    });
+
+    const authData = await okAuth.json();
+
+    if (!okAuth.ok) {
+      // mapear mensaje amigable
+      const msgFromAffirm = authData?.affirm_message;
+      throw new Error(
+        msgFromAffirm ||
+        'Affirm couldn’t authorize this purchase. It may be a credit decision or an issue with the account.'
+      );
     }
+
+    const cap = await fetch('/.netlify/functions/affirm-capture', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ charge_id: authData.charge_id }),
+    });
+
+    const capData = await cap.json();
+
+    if (!cap.ok) {
+      const msgFromAffirm = capData?.affirm_message;
+      throw new Error(
+        msgFromAffirm ||
+        'Affirm authorized the payment but we couldn’t complete the charge. Please contact us to verify your order.'
+      );
+    }
+
+    clearCart();
+    window.location.href = '/order-confirmed';
+  } catch (e) {
+    console.error(e);
+
+    const msg = e?.message || '';
+
+    // casos especiales de cierre del modal
+    if (msg === 'User closed' || msg === 'User aborted') {
+      // Si querés no mostrar nada, simplemente return sin setError.
+      setError('You closed the Affirm window before completing the payment.');
+      return;
+    }
+
+    // mensaje genérico
+    setError(
+      msg ||
+      'We couldn’t complete the payment with Affirm. Please try again or contact us if the problem continues.'
+    );
+  } finally {
+    setLoading(false);
   }
+};
+
 
   return (
     <div
