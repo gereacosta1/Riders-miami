@@ -1,3 +1,4 @@
+// src/components/ProductGrid.jsx
 import React, { useMemo, useState } from 'react';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';

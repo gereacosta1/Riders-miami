@@ -1,4 +1,4 @@
-
+// src/components/AffirmPromo.jsx
 import React, { useEffect, useRef } from 'react'
 
 // Lightweight proxy for Affirm promo messaging; also renders static fallback text.

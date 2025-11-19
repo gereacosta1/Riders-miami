@@ -1,3 +1,4 @@
+// src/components/ProductCard.jsx
 import React from 'react';
 import { usd } from '../utils/currency';
 import AffirmPromo from './AffirmPromo';
