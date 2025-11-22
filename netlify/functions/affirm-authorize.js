@@ -14,20 +14,21 @@ export async function handler(event) {
       };
     }
 
+    // Base URL de Affirm (usa env si existe, sino live por defecto)
+    let base = process.env.AFFIRM_API_BASE || 'https://api.affirm.com/api';
+    if (base.endsWith('/')) base = base.slice(0, -1);
+
     const key = `${process.env.AFFIRM_PUBLIC_KEY}:${process.env.AFFIRM_PRIVATE_KEY}`;
     const auth = 'Basic ' + Buffer.from(key).toString('base64');
 
-    const r = await fetch(
-      `${process.env.AFFIRM_API_BASE || 'https://api.affirm.com'}/v2/charges`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: auth,
-        },
-        body: JSON.stringify({ checkout_token }),
-      }
-    );
+    const r = await fetch(`${base}/v2/charges`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: auth,
+      },
+      body: JSON.stringify({ checkout_token }),
+    });
 
     const text = await r.text();
 
