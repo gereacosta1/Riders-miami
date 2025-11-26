@@ -1,31 +1,37 @@
 // src/pages/Checkout.jsx
-import React from 'react';
-import { useCart } from '../context/CartContext';
-import { usd } from '../utils/currency';
-import { startAffirm } from '../utils/affirm';
+import React from "react";
+import { useCart } from "../context/CartContext";
+import { usd } from "../utils/currency";
+import { startAffirm } from "../utils/affirm";
 
 export default function Checkout() {
   const { items, totals } = useCart();
 
   const handlePayWithAffirm = async () => {
     try {
-      await startAffirm(items, {
-        // si tu contexto ya trae shipping/tax, pásalos aquí:
+      const res = await startAffirm(items, {
         shipping: totals?.shipping || 0,
         tax: totals?.tax || 0,
-        // opcional: si querés forzar el total exacto:
-        // total: totals?.total
+        // Si querés forzar el total exacto:
+        // total: totals?.total,
       });
+
+      console.log("[Affirm] Final result:", res);
+      alert("Payment completed with Affirm. Status: " + res.status);
+      // TODO: acá podrías vaciar carrito y redirigir:
+      // window.location.href = "/order-confirmed";
     } catch (e) {
-      console.error(e);
-      alert(e.message || 'Unable to start Affirm checkout.');
+      console.error("[Affirm] Error in flow:", e);
+      alert(e.message || "Unable to complete Affirm payment.");
     }
   };
 
   return (
     <section className="container-narrow my-5">
       <h1>Checkout</h1>
-      <p className="text-white-50">Review your order before paying with Affirm.</p>
+      <p className="text-white-50">
+        Review your order before paying with Affirm.
+      </p>
 
       <div className="card-dark p-3">
         {items.length === 0 ? (
@@ -53,8 +59,7 @@ export default function Checkout() {
               <button className="btn btn-accent" onClick={handlePayWithAffirm}>
                 Pay with Affirm
               </button>
-              {/* botón alternativo para volver al carrito */}
-              <a className="btn btn-outline-light" href="/">
+              <a className="btn btn-outline-light" href="/cart">
                 Back to Cart
               </a>
             </div>
