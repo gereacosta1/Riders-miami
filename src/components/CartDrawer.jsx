@@ -3,13 +3,14 @@ import React, { useState, useEffect, memo } from 'react';
 import { useCart } from '../context/CartContext';
 import { usd } from '../utils/currency';
 import { buildAffirmCheckout, openAffirmCheckout } from '../utils/affirm';
+import PayWithCard from '../components/PayWithCard';
 
 export default function CartDrawer({ open, onClose }) {
   const { items, totals, updateQty, removeItem, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Si cambia el contenido del carrito (o queda vacío), limpiamos el mensaje
+  // Reset error when the cart becomes empty
   useEffect(() => {
     if (items.length === 0) {
       setError('');
@@ -23,9 +24,6 @@ export default function CartDrawer({ open, onClose }) {
     try {
       const checkout = buildAffirmCheckout(items, totals);
       const res = await openAffirmCheckout(checkout);
-
-      // Si el usuario cerró el modal, openAffirmCheckout lanza error
-      // y NO se ejecuta nada de abajo.
 
       const okAuth = await fetch('/.netlify/functions/affirm-authorize', {
         method: 'POST',
@@ -64,7 +62,6 @@ export default function CartDrawer({ open, onClose }) {
     } catch (e) {
       const msg = e?.message || '';
 
-      // ✅ Solo mostramos mensaje rojo cuando el usuario cierra el modal
       if (msg === 'User closed' || msg === 'User aborted') {
         setError(
           'We couldn’t complete the payment with Affirm because the window was closed. Please try again when you’re ready.'
@@ -107,6 +104,7 @@ export default function CartDrawer({ open, onClose }) {
         {items.length === 0 && (
           <div className="text-white-50">Your cart is empty.</div>
         )}
+
         {items.map((it) => (
           <CartItem
             key={it.id}
@@ -136,6 +134,7 @@ export default function CartDrawer({ open, onClose }) {
           <div className="text-danger small mt-2">{error}</div>
         )}
 
+        {/* Affirm checkout button */}
         <button
           className="btn btn-accent w-100"
           onClick={handleCheckout}
@@ -156,6 +155,11 @@ export default function CartDrawer({ open, onClose }) {
         >
           {loading ? 'Processing…' : 'Checkout with Affirm'}
         </button>
+
+        {/* Stripe card payment */}
+        <div className="mt-3">
+          <PayWithCard />
+        </div>
       </div>
     </div>
   );
@@ -176,9 +180,11 @@ const CartItem = memo(function CartItem({ it, updateQty, removeItem }) {
         }}
         loading="lazy"
       />
+
       <div className="flex-grow-1">
         <div className="fw-semibold">{it.title}</div>
         <div className="small text-white-50">{usd(it.price)}</div>
+
         <div className="d-flex align-items-center gap-2 mt-1">
           <button
             className="btn btn-sm btn-outline-light"
@@ -186,13 +192,16 @@ const CartItem = memo(function CartItem({ it, updateQty, removeItem }) {
           >
             -
           </button>
+
           <span className="small">{it.qty}</span>
+
           <button
             className="btn btn-sm btn-outline-light"
             onClick={() => updateQty(it.id, it.qty + 1)}
           >
             +
           </button>
+
           <button
             className="btn btn-sm btn-outline-danger ms-2"
             onClick={() => removeItem(it.id)}
