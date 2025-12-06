@@ -20,7 +20,7 @@ const PayWithCard: React.FC = () => {
 
       setLoading(true);
       await startCardCheckout(items);
-      // La redirección a Stripe la hace startCardCheckout
+      // Redirección la hace startCardCheckout
     } catch (e: any) {
       console.error('[PayWithCard] error', e);
       setError(e?.message || 'An error occurred while starting the payment.');
@@ -31,37 +31,37 @@ const PayWithCard: React.FC = () => {
   const disabled = loading || !items || !items.length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <div className="d-flex flex-column gap-1">
+      
       <button
         type="button"
         onClick={handleClick}
         disabled={disabled}
+        className="btn btn-accent w-100"
         style={{
-          width: '100%',
-          padding: '0.75rem 1rem',
-          borderRadius: '0.5rem',
-          border: 'none',
-          fontWeight: 700,
-          fontSize: '0.9rem',
-          backgroundColor: '#111827', // gris oscuro
-          color: '#ffffff',
+          borderRadius: '12px',
+          paddingBlock: '14px',
+          fontWeight: 600,
+          boxShadow: '0 6px 20px rgba(111, 78, 255, 0.35)',
+          transition: 'transform .15s ease',
           opacity: disabled ? 0.6 : 1,
           cursor: disabled ? 'not-allowed' : 'pointer',
         }}
+        onMouseEnter={(e) => {
+          if (!disabled) e.currentTarget.style.transform = 'translateY(-2px)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
       >
-        {loading ? 'Redirecting to payment…' : 'Pay with card (credit / debit)'}
+        {loading ? 'Redirecting…' : 'Pay with card (credit / debit)'}
       </button>
 
-      <p style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
-        Total{' '}
-        <span style={{ fontWeight: 600 }}>
-          ${Number(totalUSD || 0).toFixed(2)} USD
-        </span>
+      <p className="small text-white-50 mb-0">
+        Total <span className="fw-semibold">${Number(totalUSD || 0).toFixed(2)} USD</span>
       </p>
 
-      {error && (
-        <p style={{ fontSize: '0.75rem', color: '#ef4444' }}>{error}</p>
-      )}
+      {error && <p className="small text-danger mb-0">{error}</p>}
     </div>
   );
 };
