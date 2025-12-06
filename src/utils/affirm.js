@@ -2,15 +2,16 @@
 import { toCents } from "./money";
 
 const FALLBACK_CUSTOMER = {
+  // Nombre genérico, sin datos de OneWay
   first: "Online",
   last: "Customer",
-  email: "onewaymotors2@gmail.com",
-  phone: "17862530995",
+  email: "",
+  phone: "",
   addr: {
-    line1: "297 NW 54th St",
-    city: "Miami",
-    state: "FL",
-    zipcode: "33127",
+    line1: "",
+    city: "",
+    state: "",
+    zipcode: "",
     country: "US",
   },
 };
@@ -58,19 +59,26 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
       user_cancel_url: window.location.origin + "/affirm/cancel",
       user_confirmation_url_action: "GET",
     },
-    // Datos básicos (Affirm después le pide sus propios datos al cliente)
+    // Dejamos estos campos vacíos para que Affirm use los datos que el cliente
+    // completa en el flujo, en vez de autocompletar con datos de OneWay.
     customer: {
-      email: FALLBACK_CUSTOMER.email,
-      phone_number: FALLBACK_CUSTOMER.phone,
+      email: "",
+      phone_number: "",
     },
     shipping: {
-      name: { first: FALLBACK_CUSTOMER.first, last: FALLBACK_CUSTOMER.last },
+      name: {
+        first: "",
+        last: "",
+      },
       address: { ...FALLBACK_CUSTOMER.addr },
-      email: FALLBACK_CUSTOMER.email,
-      phone_number: FALLBACK_CUSTOMER.phone,
+      email: "",
+      phone_number: "",
     },
     billing: {
-      name: { first: FALLBACK_CUSTOMER.first, last: FALLBACK_CUSTOMER.last },
+      name: {
+        first: "",
+        last: "",
+      },
       address: { ...FALLBACK_CUSTOMER.addr },
     },
     items,
