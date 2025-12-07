@@ -1,24 +1,23 @@
-// src/utils/affirm.js
+// src/utils/affirm.js 
 import { toCents } from "./money";
 
 const FALLBACK_CUSTOMER = {
-  // Nombre genérico, sin datos de OneWay
   first: "Online",
   last: "Customer",
-  email: "",
-  phone: "",
+  email: "onewaymotors2@gmail.com",
+  phone: "17862530995",
   addr: {
-    line1: "",
-    city: "",
-    state: "",
-    zipcode: "",
+    line1: "297 NW 54th St",
+    city: "Miami",
+    state: "FL",
+    zipcode: "33127",
     country: "US",
   },
 };
 
 // Construye payload Affirm a partir del carrito
 export function buildAffirmCheckout(cartItems, totals = {}) {
-  // Items -> centavos
+
   const items = cartItems.map(({ id, title, price, qty, image, url }) => {
     const quantity = Number(qty ?? 1) || 1;
     return {
@@ -27,7 +26,6 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
       unit_price: toCents(price),
       qty: quantity,
       item_url: url || window.location.origin + "/",
-      // Affirm usa image_url
       image_url: image?.startsWith("http")
         ? image
         : window.location.origin + (image || ""),
@@ -38,9 +36,11 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
     (acc, it) => acc + it.unit_price * it.qty,
     0
   );
+
   const shippingCents =
     "shipping" in totals ? toCents(totals.shipping) : toCents(0);
   const taxCents = "tax" in totals ? toCents(totals.tax) : toCents(0);
+
   const totalCents =
     "total" in totals
       ? toCents(totals.total)
@@ -59,28 +59,24 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
       user_cancel_url: window.location.origin + "/affirm/cancel",
       user_confirmation_url_action: "GET",
     },
-    // Dejamos estos campos vacíos para que Affirm use los datos que el cliente
-    // completa en el flujo, en vez de autocompletar con datos de OneWay.
+
     customer: {
-      email: "",
-      phone_number: "",
+      email: FALLBACK_CUSTOMER.email,
+      phone_number: FALLBACK_CUSTOMER.phone,
     },
+
     shipping: {
-      name: {
-        first: "",
-        last: "",
-      },
+      name: { first: FALLBACK_CUSTOMER.first, last: FALLBACK_CUSTOMER.last },
       address: { ...FALLBACK_CUSTOMER.addr },
-      email: "",
-      phone_number: "",
+      email: FALLBACK_CUSTOMER.email,
+      phone_number: FALLBACK_CUSTOMER.phone,
     },
+
     billing: {
-      name: {
-        first: "",
-        last: "",
-      },
+      name: { first: FALLBACK_CUSTOMER.first, last: FALLBACK_CUSTOMER.last },
       address: { ...FALLBACK_CUSTOMER.addr },
     },
+
     items,
     currency: "USD",
     shipping_amount: shippingCents,
@@ -99,10 +95,7 @@ export function openAffirmCheckout(checkout) {
 
     affirm.checkout(checkout);
     affirm.checkout.open({
-      onSuccess: (res) => {
-        console.log("[Affirm] onSuccess:", res);
-        resolve(res);
-      },
+      onSuccess: (res) => resolve(res),
       onFail: (e) => reject(e),
       onValidationError: (e) => reject(e),
       onClose: () => reject(new Error("User closed")),
@@ -111,9 +104,7 @@ export function openAffirmCheckout(checkout) {
   });
 }
 
-// Flujo completo: abrir modal -> authorize -> capture
 export async function startAffirm(cartItems, totals = {}) {
-  // 1) Construir checkout y abrir modal
   const checkout = buildAffirmCheckout(cartItems, totals);
   const result = await openAffirmCheckout(checkout);
 
@@ -123,7 +114,6 @@ export async function startAffirm(cartItems, totals = {}) {
 
   const checkout_token = result.checkout_token;
 
-  // 2) Autorizar el cargo en Netlify
   const authRes = await fetch("/.netlify/functions/affirm-authorize", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -131,7 +121,6 @@ export async function startAffirm(cartItems, totals = {}) {
   });
 
   const authData = await authRes.json();
-  console.log("[Affirm] authorize response:", authRes.status, authData);
 
   if (!authRes.ok || !authData.charge_id) {
     throw new Error(
@@ -143,7 +132,6 @@ export async function startAffirm(cartItems, totals = {}) {
 
   const charge_id = authData.charge_id;
 
-  // 3) Capturar el cargo
   const captureRes = await fetch("/.netlify/functions/affirm-capture", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -151,7 +139,6 @@ export async function startAffirm(cartItems, totals = {}) {
   });
 
   const captureData = await captureRes.json();
-  console.log("[Affirm] capture response:", captureRes.status, captureData);
 
   if (!captureRes.ok) {
     throw new Error(
@@ -161,18 +148,9 @@ export async function startAffirm(cartItems, totals = {}) {
     );
   }
 
-  // 4) Devolver info al componente
   return {
     checkout_token,
     charge_id,
     status: captureData.status || "captured",
   };
-}
-
-// Al final de src/utils/affirm.js
-
-// Helpers de debug para usar desde la consola del navegador
-if (typeof window !== "undefined") {
-  window.__rm_buildAffirmCheckout = buildAffirmCheckout;
-  window.__rm_openAffirmCheckout = openAffirmCheckout;
 }
