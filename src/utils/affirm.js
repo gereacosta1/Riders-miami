@@ -168,3 +168,11 @@ export async function startAffirm(cartItems, totals = {}) {
     status: captureData.status || "captured",
   };
 }
+
+// Al final de src/utils/affirm.js
+
+// Helpers de debug para usar desde la consola del navegador
+if (typeof window !== "undefined") {
+  window.__rm_buildAffirmCheckout = buildAffirmCheckout;
+  window.__rm_openAffirmCheckout = openAffirmCheckout;
+}
