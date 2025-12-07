@@ -3,7 +3,6 @@ import React, { useState, useEffect, memo } from 'react';
 import { useCart } from '../context/CartContext';
 import { usd } from '../utils/currency';
 import { buildAffirmCheckout, openAffirmCheckout } from '../utils/affirm';
-import PayWithCard from '../components/PayWithCard';
 
 export default function CartDrawer({ open, onClose }) {
   const { items, totals, updateQty, removeItem, clearCart } = useCart();
@@ -155,11 +154,6 @@ export default function CartDrawer({ open, onClose }) {
         >
           {loading ? 'Processing…' : 'Checkout with Affirm'}
         </button>
-
-        {/* Stripe card payment */}
-        <div className="mt-3">
-          <PayWithCard />
-        </div>
       </div>
     </div>
   );
