@@ -1,88 +1,27 @@
 // src/components/CartDrawer.jsx
-import React, { useState, useEffect, memo } from 'react';
-import { useCart } from '../context/CartContext';
-import { usd } from '../utils/currency';
-import { buildAffirmCheckout, openAffirmCheckout } from '../utils/affirm';
+import React, { memo } from "react";
+import { useCart } from "../context/CartContext";
+import { usd } from "../utils/currency";
 
 export default function CartDrawer({ open, onClose }) {
-  const { items, totals, updateQty, removeItem, clearCart } = useCart();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { items, totals, updateQty, removeItem } = useCart();
 
-  // Reset error when the cart becomes empty
-  useEffect(() => {
-    if (items.length === 0) {
-      setError('');
-    }
-  }, [items.length]);
+  const handleGoToCheckout = () => {
+    if (!items.length) return;
 
-  const handleCheckout = async () => {
-    setLoading(true);
-    setError('');
+    // Cerramos el drawer (si se pasó la prop)
+    if (onClose) onClose();
 
-    try {
-      const checkout = buildAffirmCheckout(items, totals);
-      const res = await openAffirmCheckout(checkout);
-
-      const okAuth = await fetch('/.netlify/functions/affirm-authorize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ checkout_token: res.checkout_token }),
-      });
-
-      const authData = await okAuth.json();
-
-      if (!okAuth.ok) {
-        console.error('Affirm authorize error', authData);
-        alert(
-          'There was a problem authorizing the payment with Affirm. Please contact us to complete your order.'
-        );
-        return;
-      }
-
-      const cap = await fetch('/.netlify/functions/affirm-capture', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ charge_id: authData.charge_id }),
-      });
-
-      const capData = await cap.json();
-
-      if (!cap.ok) {
-        console.error('Affirm capture error', capData);
-        alert(
-          'Affirm authorized the payment but we couldn’t complete the charge. Please contact us to verify your order.'
-        );
-        return;
-      }
-
-      clearCart();
-      window.location.href = '/order-confirmed';
-    } catch (e) {
-      const msg = e?.message || '';
-
-      if (msg === 'User closed' || msg === 'User aborted') {
-        setError(
-          'We couldn’t complete the payment with Affirm because the window was closed. Please try again when you’re ready.'
-        );
-        return;
-      }
-
-      console.error('Unexpected Affirm error', e);
-      alert(
-        'Something went wrong starting the payment with Affirm. Please try again or contact us.'
-      );
-    } finally {
-      setLoading(false);
-    }
+    // Navegamos a la página de checkout con el formulario
+    window.location.href = "/checkout";
   };
 
   return (
     <div
       className="rm-drawer"
       style={{
-        transform: open ? 'translate3d(0,0,0)' : 'translate3d(110%,0,0)',
-        pointerEvents: open ? 'auto' : 'none',
+        transform: open ? "translate3d(0,0,0)" : "translate3d(110%,0,0)",
+        pointerEvents: open ? "auto" : "none",
       }}
       aria-hidden={!open}
       aria-label="Cart drawer"
@@ -118,10 +57,10 @@ export default function CartDrawer({ open, onClose }) {
       <div
         className="border-top border-secondary p-3"
         style={{
-          background: '#111722',
-          borderBottomLeftRadius: '14px',
-          borderBottomRightRadius: '14px',
-          paddingBottom: '60px',
+          background: "#111722",
+          borderBottomLeftRadius: "14px",
+          borderBottomRightRadius: "14px",
+          paddingBottom: "60px",
         }}
       >
         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -129,30 +68,26 @@ export default function CartDrawer({ open, onClose }) {
           <strong>{usd(totals.subtotal)}</strong>
         </div>
 
-        {items.length > 0 && error && (
-          <div className="text-danger small mt-2">{error}</div>
-        )}
-
-        {/* Affirm checkout button */}
+        {/* Botón para ir al checkout (ya no abre Affirm directo) */}
         <button
           className="btn btn-accent w-100"
-          onClick={handleCheckout}
-          disabled={items.length === 0 || loading}
+          onClick={handleGoToCheckout}
+          disabled={items.length === 0}
           style={{
-            borderRadius: '12px',
-            paddingBlock: '14px',
+            borderRadius: "12px",
+            paddingBlock: "14px",
             fontWeight: 600,
-            boxShadow: '0 6px 20px rgba(111, 78, 255, 0.35)',
-            transition: 'transform .15s ease',
+            boxShadow: "0 6px 20px rgba(111, 78, 255, 0.35)",
+            transition: "transform .15s ease",
           }}
           onMouseEnter={(e) =>
-            (e.currentTarget.style.transform = 'translateY(-2px)')
+            (e.currentTarget.style.transform = "translateY(-2px)")
           }
           onMouseLeave={(e) =>
-            (e.currentTarget.style.transform = 'translateY(0)')
+            (e.currentTarget.style.transform = "translateY(0)")
           }
         >
-          {loading ? 'Processing…' : 'Checkout with Affirm'}
+          Continue to checkout
         </button>
       </div>
     </div>
@@ -164,13 +99,13 @@ const CartItem = memo(function CartItem({ it, updateQty, removeItem }) {
   return (
     <div className="d-flex gap-3 align-items-center">
       <img
-        src={it.image || '/img/placeholder.png'}
+        src={it.image || "/img/placeholder.png"}
         width="64"
         height="64"
-        style={{ objectFit: 'cover', borderRadius: 12 }}
+        style={{ objectFit: "cover", borderRadius: 12 }}
         alt={it.title}
         onError={(e) => {
-          e.currentTarget.src = '/img/placeholder.png';
+          e.currentTarget.src = "/img/placeholder.png";
         }}
         loading="lazy"
       />
