@@ -20,6 +20,9 @@ export async function handler(event) {
 
     const key = `${process.env.AFFIRM_PUBLIC_KEY}:${process.env.AFFIRM_PRIVATE_KEY}`;
     const auth = 'Basic ' + Buffer.from(key).toString('base64');
+    console.log("[AFFIRM] BASE:", base);
+    console.log("[AFFIRM] PUBLIC KEY PRESENT:", !!process.env.AFFIRM_PUBLIC_KEY);
+
 
     const r = await fetch(`${base}/v2/charges`, {
       method: 'POST',
