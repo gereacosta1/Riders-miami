@@ -88,7 +88,7 @@ export default function Checkout() {
         Completá tus datos y revisá tu pedido antes de pagar con Affirm.
       </p>
 
-      <div className="card-dark p-3">
+      <div className="card-dark p-4 p-md-5 checkout-card">
         {items.length === 0 ? (
           <div>Tu carrito está vacío.</div>
         ) : (
@@ -121,7 +121,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="firstName"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.firstName}
                   onChange={handleChange}
                 />
@@ -131,7 +131,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="lastName"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.lastName}
                   onChange={handleChange}
                 />
@@ -142,7 +142,7 @@ export default function Checkout() {
                 <input
                   type="email"
                   name="email"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.email}
                   onChange={handleChange}
                 />
@@ -154,7 +154,7 @@ export default function Checkout() {
                 <input
                   type="tel"
                   name="phone"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.phone}
                   onChange={handleChange}
                 />
@@ -167,7 +167,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="address1"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.address1}
                   onChange={handleChange}
                 />
@@ -180,7 +180,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="address2"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.address2}
                   onChange={handleChange}
                 />
@@ -191,7 +191,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="city"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.city}
                   onChange={handleChange}
                 />
@@ -202,7 +202,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="state"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.state}
                   onChange={handleChange}
                 />
@@ -213,7 +213,7 @@ export default function Checkout() {
                 <input
                   type="text"
                   name="zip"
-                  className="form-control"
+                  className="form-control checkout-input"
                   value={customer.zip}
                   onChange={handleChange}
                 />
@@ -229,9 +229,13 @@ export default function Checkout() {
               >
                 {loading ? "Procesando..." : "Pagar con Affirm"}
               </button>
-              <a className="btn btn-outline-light" href="/cart">
-                Volver al carrito
-              </a>
+               <button
+                  type="button"
+                  className="btn btn-outline-light"
+                  onClick={() => window.history.back()}
+                >
+                  Volver al carrito
+                </button>
             </div>
           </>
         )}

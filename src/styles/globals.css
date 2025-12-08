@@ -1,3 +1,4 @@
+/* src/styles/global,css */
 :root {
   --gutter: clamp(16px, 3vw, 32px);
   --content-max: 1200px;
@@ -228,4 +229,42 @@ html, body {
 .site-nav a:hover,
 .site-nav .cart-link:hover {
   color: #ffffff;
+}
+
+/* --- Checkout estilo más Apple --- */
+
+.checkout-card {
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, #050814, #0b1120);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.75);
+}
+
+.checkout-input {
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.96);
+  color: #f9fafb;
+  padding-block: 10px;
+  padding-inline: 12px;
+  font-size: 0.95rem;
+  transition: all 0.18s ease;
+}
+
+.checkout-input::placeholder {
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.checkout-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.65);
+  background: #020617;
+  color: #ffffff;
+  outline: none;
+}
+
+.checkout-input:-webkit-autofill {
+  box-shadow: 0 0 0 40px #020617 inset !important;
+  -webkit-text-fill-color: #f9fafb !important;
+  border-radius: 12px;
 }
