@@ -1,3 +1,4 @@
+// src/utils/affirmConfig.js
 export function initAffirm() {
   const publicKey = import.meta.env.VITE_AFFIRM_PUBLIC_KEY;
 

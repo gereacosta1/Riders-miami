@@ -1,4 +1,4 @@
-// src/utils/affirm.js 
+// src/utils/affirm.js
 import { toCents } from "./money";
 
 const FALLBACK_CUSTOMER = {
@@ -15,9 +15,43 @@ const FALLBACK_CUSTOMER = {
   },
 };
 
-// Construye payload Affirm a partir del carrito
-export function buildAffirmCheckout(cartItems, totals = {}) {
+// Normaliza datos del cliente que vienen del formulario
+function normalizeCustomer(raw = {}) {
+  const first = String(raw.firstName || "").trim();
+  const last = String(raw.lastName || "").trim();
+  const email = String(raw.email || "").trim();
+  const phone = String(raw.phone || "").replace(/[^\d]/g, ""); // solo dígitos
 
+  const address1 = String(raw.address1 || "").trim();
+  const address2 = String(raw.address2 || "").trim();
+  const city = String(raw.city || "").trim();
+  const state = String(raw.state || "").trim();
+  const zip = String(raw.zip || "").trim();
+  const country = String(raw.country || "US").trim() || "US";
+
+  // si algo crítico falta, usamos fallback, pero la idea es que el form lo evite
+  if (!first || !last || !email || !phone || !address1 || !city || !state || !zip) {
+    return FALLBACK_CUSTOMER;
+  }
+
+  return {
+    first,
+    last,
+    email,
+    phone,
+    addr: {
+      line1: address1,
+      line2: address2,
+      city,
+      state,
+      zipcode: zip,
+      country,
+    },
+  };
+}
+
+// Construye payload Affirm a partir del carrito + datos del cliente
+export function buildAffirmCheckout(cartItems, totals = {}, customerInfo = null) {
   const items = cartItems.map(({ id, title, price, qty, image, url }) => {
     const quantity = Number(qty ?? 1) || 1;
     return {
@@ -52,6 +86,9 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
 
   const orderId = "ORDER-" + Date.now();
 
+  const c = normalizeCustomer(customerInfo || {});
+  console.log("[Affirm] Checkout customer used:", c);
+
   return {
     merchant: {
       name: "Riders Miami",
@@ -61,20 +98,20 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
     },
 
     customer: {
-      email: FALLBACK_CUSTOMER.email,
-      phone_number: FALLBACK_CUSTOMER.phone,
+      email: c.email,
+      phone_number: c.phone,
     },
 
     shipping: {
-      name: { first: FALLBACK_CUSTOMER.first, last: FALLBACK_CUSTOMER.last },
-      address: { ...FALLBACK_CUSTOMER.addr },
-      email: FALLBACK_CUSTOMER.email,
-      phone_number: FALLBACK_CUSTOMER.phone,
+      name: { first: c.first, last: c.last },
+      address: { ...c.addr },
+      email: c.email,
+      phone_number: c.phone,
     },
 
     billing: {
-      name: { first: FALLBACK_CUSTOMER.first, last: FALLBACK_CUSTOMER.last },
-      address: { ...FALLBACK_CUSTOMER.addr },
+      name: { first: c.first, last: c.last },
+      address: { ...c.addr },
     },
 
     items,
@@ -83,7 +120,10 @@ export function buildAffirmCheckout(cartItems, totals = {}) {
     tax_amount: taxCents,
     total: totalCents,
     order_id: orderId,
-    metadata: { mode: "modal" },
+    metadata: {
+      mode: "modal",
+      source: "riders-miami-checkout",
+    },
   };
 }
 
@@ -104,8 +144,8 @@ export function openAffirmCheckout(checkout) {
   });
 }
 
-export async function startAffirm(cartItems, totals = {}) {
-  const checkout = buildAffirmCheckout(cartItems, totals);
+export async function startAffirm(cartItems, totals = {}, customerInfo = null) {
+  const checkout = buildAffirmCheckout(cartItems, totals, customerInfo);
   const result = await openAffirmCheckout(checkout);
 
   if (!result || !result.checkout_token) {
