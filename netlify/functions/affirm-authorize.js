@@ -1,5 +1,12 @@
 // netlify/functions/affirm-authorize.js
 
+function maskKey(k) {
+  if (!k) return null;
+  const s = String(k);
+  if (s.length <= 10) return s;
+  return s.slice(0, 6) + "..." + s.slice(-4);
+}
+
 export async function handler(event) {
   try {
     if (event.httpMethod !== "POST") {
@@ -10,7 +17,6 @@ export async function handler(event) {
       };
     }
 
-    // Log básico de la request que llega al serverless
     console.log("[AFFIRM AUTH] Incoming body:", event.body);
 
     const { checkout_token } = JSON.parse(event.body || "{}");
@@ -30,7 +36,13 @@ export async function handler(event) {
     const publicKey = process.env.AFFIRM_PUBLIC_KEY;
     const privateKey = process.env.AFFIRM_PRIVATE_KEY;
 
-    // Si faltan keys, lo registramos bien explícito
+    // Logueamos qué ve el servidor, pero enmascarado
+    console.log("[AFFIRM AUTH] Env check:", {
+      base,
+      publicKey: maskKey(publicKey),
+      privateKey: maskKey(privateKey),
+    });
+
     if (!publicKey || !privateKey) {
       console.error("[AFFIRM AUTH] Missing API keys", {
         hasPublic: !!publicKey,
@@ -50,12 +62,6 @@ export async function handler(event) {
     const key = `${publicKey}:${privateKey}`;
     const auth = "Basic " + Buffer.from(key).toString("base64");
 
-    console.log("[AFFIRM AUTH] Using base URL:", base);
-    console.log("[AFFIRM AUTH] Keys present:", {
-      hasPublic: !!publicKey,
-      hasPrivate: !!privateKey,
-    });
-
     const r = await fetch(`${base}/v2/charges`, {
       method: "POST",
       headers: {
@@ -67,7 +73,6 @@ export async function handler(event) {
 
     const text = await r.text();
 
-    // Logueamos SIEMPRE la respuesta cruda de Affirm
     console.log("[AFFIRM AUTH] Affirm response status:", r.status);
     console.log("[AFFIRM AUTH] Affirm response body:", text);
 
@@ -75,9 +80,7 @@ export async function handler(event) {
       let errJson = null;
       try {
         errJson = JSON.parse(text);
-      } catch (_) {
-        // no-op
-      }
+      } catch (_) {}
 
       return {
         statusCode: r.status,
