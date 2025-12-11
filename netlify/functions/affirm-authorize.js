@@ -2,32 +2,64 @@
 
 export async function handler(event) {
   try {
-    if (event.httpMethod !== 'POST') {
-      return { statusCode: 405, body: 'Method Not Allowed' };
+    if (event.httpMethod !== "POST") {
+      return {
+        statusCode: 405,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Method Not Allowed" }),
+      };
     }
 
-    const { checkout_token } = JSON.parse(event.body || '{}');
+    // Log básico de la request que llega al serverless
+    console.log("[AFFIRM AUTH] Incoming body:", event.body);
+
+    const { checkout_token } = JSON.parse(event.body || "{}");
     if (!checkout_token) {
+      console.log("[AFFIRM AUTH] Missing checkout_token");
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing checkout_token' }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Missing checkout_token" }),
       };
     }
 
     // Base URL de Affirm (usa env si existe, sino live por defecto)
-    let base = process.env.AFFIRM_API_BASE || 'https://api.affirm.com/api';
-    if (base.endsWith('/')) base = base.slice(0, -1);
+    let base = process.env.AFFIRM_API_BASE || "https://api.affirm.com/api";
+    if (base.endsWith("/")) base = base.slice(0, -1);
 
-    const key = `${process.env.AFFIRM_PUBLIC_KEY}:${process.env.AFFIRM_PRIVATE_KEY}`;
-    const auth = 'Basic ' + Buffer.from(key).toString('base64');
-    console.log("[AFFIRM] BASE:", base);
-    console.log("[AFFIRM] PUBLIC KEY PRESENT:", !!process.env.AFFIRM_PUBLIC_KEY);
+    const publicKey = process.env.AFFIRM_PUBLIC_KEY;
+    const privateKey = process.env.AFFIRM_PRIVATE_KEY;
 
+    // Si faltan keys, lo registramos bien explícito
+    if (!publicKey || !privateKey) {
+      console.error("[AFFIRM AUTH] Missing API keys", {
+        hasPublic: !!publicKey,
+        hasPrivate: !!privateKey,
+      });
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          error: "missing_affirm_keys",
+          message:
+            "AFFIRM_PUBLIC_KEY or AFFIRM_PRIVATE_KEY not configured in environment.",
+        }),
+      };
+    }
+
+    const key = `${publicKey}:${privateKey}`;
+    const auth = "Basic " + Buffer.from(key).toString("base64");
+
+    console.log("[AFFIRM AUTH] Using base URL:", base);
+    console.log("[AFFIRM AUTH] Keys present:", {
+      hasPublic: !!publicKey,
+      hasPrivate: !!privateKey,
+    });
 
     const r = await fetch(`${base}/v2/charges`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: auth,
       },
       body: JSON.stringify({ checkout_token }),
@@ -35,16 +67,23 @@ export async function handler(event) {
 
     const text = await r.text();
 
+    // Logueamos SIEMPRE la respuesta cruda de Affirm
+    console.log("[AFFIRM AUTH] Affirm response status:", r.status);
+    console.log("[AFFIRM AUTH] Affirm response body:", text);
+
     if (!r.ok) {
       let errJson = null;
       try {
         errJson = JSON.parse(text);
-      } catch (_) {}
+      } catch (_) {
+        // no-op
+      }
 
       return {
         statusCode: r.status,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          error: 'authorize_failed',
+          error: "authorize_failed",
           affirm_code: errJson?.code || null,
           affirm_message: errJson?.message || null,
           raw: text,
@@ -56,12 +95,15 @@ export async function handler(event) {
 
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ charge_id: data.id, status: data.status }),
     };
   } catch (e) {
+    console.error("[AFFIRM AUTH] Server error:", e);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'server_error', detail: String(e) }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "server_error", detail: String(e) }),
     };
   }
 }
