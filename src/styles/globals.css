@@ -1,8 +1,14 @@
-/* src/styles/global,css */
+/* src/styles/globals.css */
 :root {
   --gutter: clamp(16px, 3vw, 32px);
   --content-max: 1200px;
-  --header-h: 64px;          /* altura aprox del navbar sticky */
+  --header-h: 64px; /* altura aprox del navbar sticky */
+}
+
+/* Mejor UX para anchors (ej: #catalog / #affirm) sin cambiar diseño */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + var(--gutter));
 }
 
 /* --- Minimal Quick-View Modal --- */
@@ -14,16 +20,18 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.45);
+
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
+
   transition: opacity 160ms ease;
   opacity: 0;
-  pointer-events: none; /* ✅ no bloquea clicks cuando está “cerrado” */
+  pointer-events: none; /* no bloquea clicks cuando está “cerrado” */
 }
 
 .modal-overlay[aria-modal="true"] {
   opacity: 1;
-  pointer-events: auto; /* ✅ sólo intercepta clicks cuando el modal está activo */
+  pointer-events: auto; /* sólo intercepta clicks cuando el modal está activo */
 }
 
 .modal-card {
@@ -36,110 +44,178 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   outline: none;
 }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
-}
-.modal-header h2 { font-size: 1.05rem; margin: 0; letter-spacing: .2px; }
-.modal-close {
-  border: 0; background: transparent; color: #eaeaec;
-  padding: 6px 10px; border-radius: 10px; cursor: pointer;
-}
-.modal-close:hover { background: rgba(255,255,255,.08); }
 
-.modal-body { display: grid; gap: 18px; padding: 18px; }
-@media (min-width: 760px) { .modal-body { grid-template-columns: 1fr 1.2fr; } }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.modal-header h2 {
+  font-size: 1.05rem;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.modal-close {
+  border: 0;
+  background: transparent;
+  color: #eaeaec;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-body {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+@media (min-width: 760px) {
+  .modal-body {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
 
 .modal-media {
-  background: rgba(255,255,255,.04);
-  border-radius: 12px; aspect-ratio: 1/1;
-  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
-.modal-media img { width: 100%; height: 100%; object-fit: contain; }
-.modal-noimg { color: #a4a6ad; font-size: .9rem; }
-
-.modal-info { display: flex; flex-direction: column; min-width: 0; }
-.modal-category { color: #a4a6ad; font-size: .8rem; text-transform: lowercase; }
-.modal-price { font-size: 1.6rem; font-weight: 700; margin-top: 2px; }
-.modal-desc { margin: 10px 0 0; color: #d8d9de; line-height: 1.6; max-height: 8.5rem; overflow: hidden; }
-.modal-tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
-.modal-tag { font-size: .72rem; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.08); }
-
-.modal-actions { margin-top: auto; display: flex; gap: 10px; padding-top: 14px; }
-
-
-.grid-products {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* antes: auto-fill 220px */
-  gap: 18px;
+.modal-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.modal-noimg {
+  color: #a4a6ad;
+  font-size: 0.9rem;
 }
 
+.modal-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.modal-category {
+  color: #a4a6ad;
+  font-size: 0.8rem;
+  text-transform: lowercase;
+}
+.modal-price {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.modal-desc {
+  margin: 10px 0 0;
+  color: #d8d9de;
+  line-height: 1.6;
+  max-height: 8.5rem;
+  overflow: hidden;
+}
+.modal-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.modal-tag {
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  padding-top: 14px;
+}
+.modal-actions .btn {
+  border-radius: 14px;
+}
+
+/* Grid productos */
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
 
 /* viewport de imagen consistente y responsive */
 .prod-media {
   background: #0b0f14;
   overflow: hidden;
-  aspect-ratio: 4 / 3;     /* mantiene proporción */
-  max-height: 260px;       /* evita que crezca demasiado en pantallas grandes */
+  aspect-ratio: 4 / 3;
+  max-height: 260px;
 }
-@media (max-width: 576px) { .prod-media { max-height: 220px; } }
-@media (min-width: 1200px) { .prod-media { max-height: 300px; } }
+@media (max-width: 576px) {
+  .prod-media {
+    max-height: 220px;
+  }
+}
+@media (min-width: 1200px) {
+  .prod-media {
+    max-height: 300px;
+  }
+}
 
 .prod-media > img {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;     /* usa 'cover' si prefieres recortar */
+  object-fit: contain;
 }
 
 /* Oculta cualquier scrollbar visible */
 body {
   overflow-x: hidden;
 }
-
-/* Opcional: para navegadores Webkit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
-
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
-
-
-/* contenedor centrado que ya usas */
-.container-narrow{
+/* contenedores */
+.container-narrow {
   max-width: var(--content-max);
   margin: 0 auto;
   padding-left: var(--gutter);
   padding-right: var(--gutter);
 }
-
-/* opcional: contenedor genérico para secciones full-bleed */
-.container{
+.container {
   max-width: var(--content-max);
   margin: 0 auto;
   padding-left: var(--gutter);
   padding-right: var(--gutter);
 }
-
-/* respira verticalmente */
-.section{ padding-block: clamp(16px, 3vw, 32px); }
+.section {
+  padding-block: clamp(16px, 3vw, 32px);
+}
 
 /* catálogos también con gutter */
-#catalog{ padding-left: var(--gutter); padding-right: var(--gutter); }
-
-.modal-actions .btn { border-radius: 14px; }          /* global para el modal */
-
+#catalog {
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
 
 /* Drawer del carrito */
 .rm-drawer {
   position: fixed;
-
-  /* 👉 empieza debajo del header sticky */
   top: calc(var(--header-h) + var(--gutter));
   bottom: var(--gutter);
   right: var(--gutter);
@@ -149,33 +225,17 @@ html, body {
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   overflow: hidden;
-  z-index: 1100; /* header sigue arriba (1200), pero ya no se pisan */
+  z-index: 1100;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-  transition: transform 240ms cubic-bezier(.22,.61,.36,1);
+  transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
   backface-visibility: hidden;
 }
-
-
-
-.modal-overlay{
-  background: rgba(0,0,0,.55);      /* antes: .6 + blur */
-  backdrop-filter: none;            /* ✅ sin blur = 0 jank */
-  transition: opacity 160ms ease;
-  opacity: 0;
-}
-.modal-overlay[aria-modal="true"]{ opacity: 1; }
-.modal-overlay{
-  background: rgba(0,0,0,.45);
-  backdrop-filter: blur(2px);       /* de 4px -> 2px */
-}
-
-
 
 /* HEADER SIEMPRE VISIBLE */
 .site-header {
@@ -183,7 +243,7 @@ html, body {
   top: 0;
   z-index: 1200;
   backdrop-filter: blur(10px);
-  background: rgba(5, 7, 11, 0.92);            /* negro translúcido */
+  background: rgba(5, 7, 11, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -205,7 +265,6 @@ html, body {
   text-decoration: none;
   font-weight: 600;
 }
-
 .site-header .brand img {
   border-radius: 6px;
 }
@@ -232,7 +291,6 @@ html, body {
 }
 
 /* --- Checkout estilo más Apple --- */
-
 .checkout-card {
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -267,4 +325,53 @@ html, body {
   box-shadow: 0 0 0 40px #020617 inset !important;
   -webkit-text-fill-color: #f9fafb !important;
   border-radius: 12px;
+}
+
+/* ------------------------------
+   ✅ Affirm Compliance (UI-only)
+   ------------------------------ */
+.rm-affirm {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rm-affirm-text {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(234, 234, 236, 0.88);
+}
+
+.rm-affirm-text:last-child {
+  margin-bottom: 0;
+}
+
+.rm-affirm a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.95;
+}
+.rm-affirm a:hover {
+  opacity: 1;
+}
+
+/* Inline microcopy (ProductCard) */
+.rm-affirm-inline {
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(234, 234, 236, 0.75);
+  opacity: 0.95;
+}
+
+.rm-affirm-inline a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.rm-affirm-inline a:hover {
+  opacity: 1;
 }

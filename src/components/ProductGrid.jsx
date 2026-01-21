@@ -8,7 +8,7 @@ const startCase = (s) =>
     .replace(/[-_]/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
-export default function ProductGrid({ products }) {
+export default function ProductGrid({ products, onAddToCart, onView }) {
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('all');
   const [selected, setSelected] = useState(null);
@@ -21,7 +21,7 @@ export default function ProductGrid({ products }) {
 
   // Búsqueda + filtro por categoría
   const filtered = useMemo(() => {
-    const qlc = q.toLowerCase();
+    const qlc = q.toLowerCase().trim();
     return products.filter((p) => {
       const hayQ =
         (p.title + ' ' + (p.description || '')).toLowerCase().includes(qlc);
@@ -31,22 +31,43 @@ export default function ProductGrid({ products }) {
   }, [products, q, cat]);
 
   const handleAddToCart = (p) => {
-    // conecta aquí tu lógica real de carrito
-    console.log('Add to Cart:', p);
+    // ✅ si viene handler real por props, úsalo; si no, fallback
+    if (typeof onAddToCart === 'function') onAddToCart(p);
+    else console.log('Add to Cart:', p);
+
     setSelected(null); // si venías del modal, lo cierra
+  };
+
+  const handleView = (p) => {
+    // ✅ si viene handler real por props, úsalo; si no, abre modal local
+    if (typeof onView === 'function') onView(p);
+    else setSelected(p);
   };
 
   return (
     <>
       <section id="catalog" className="container-narrow my-5">
-        <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
-          <h2 className="m-0">Catalog</h2>
-          <input
-            className="form-control w-auto"
-            placeholder="Search..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
+        <div className="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center justify-content-between mb-3">
+          <div>
+            <h2 className="m-0">Catalog</h2>
+            <div className="text-white-50 small mt-1" style={{ lineHeight: 1.4 }}>
+              Browse by category or search by keywords.
+            </div>
+          </div>
+
+          <div className="d-flex align-items-center gap-2">
+            <span className="text-white-50 small d-none d-md-inline">
+              Showing {filtered.length} of {products.length}
+            </span>
+            <input
+              className="form-control"
+              style={{ width: 240 }}
+              placeholder="Search..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              aria-label="Search products"
+            />
+          </div>
         </div>
 
         <div className="d-flex gap-2 flex-wrap mb-3">
@@ -70,12 +91,20 @@ export default function ProductGrid({ products }) {
               key={p.id}
               product={p}
               onAddToCart={handleAddToCart}
-              onView={setSelected}
+              onView={handleView}
             />
           ))}
         </div>
+
+        {/* Mensaje vacío (útil, no molesto) */}
+        {filtered.length === 0 && (
+          <div className="text-white-50 mt-4" style={{ opacity: 0.9 }}>
+            No results. Try a different search or category.
+          </div>
+        )}
       </section>
 
+      {/* Modal local sólo si NO se está controlando desde afuera */}
       <ProductModal
         open={!!selected}
         product={selected}
