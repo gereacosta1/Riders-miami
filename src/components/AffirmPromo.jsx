@@ -1,4 +1,6 @@
 // src/components/AffirmPromo.jsx
+// compliance: redeploy ping
+
 import React, { useEffect, useRef } from 'react'
 
 // Lightweight proxy for Affirm promo messaging; also renders a compliant static fallback.
