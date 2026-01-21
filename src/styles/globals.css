@@ -1,4 +1,6 @@
 /* src/styles/globals.css */
+/* compliance: redeploy ping */
+
 :root {
   --gutter: clamp(16px, 3vw, 32px);
   --content-max: 1200px;
@@ -375,4 +377,3 @@ body {
 .rm-affirm-inline a:hover {
   opacity: 1;
 }
-/* ------------------------------ */
