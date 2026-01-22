@@ -15,9 +15,23 @@ export default function ProductCard({ product, onView, onAddToCart }) {
   const categoryLabel = product.categoryLabel || startCase(product.category);
 
   const handleAdd = () => {
-    // ✅ si te pasan handler real desde afuera, úsalo; si no, usa cart context
+    // Si te pasan handler desde afuera, úsalo; si no, usa cart context
     if (typeof onAddToCart === 'function') onAddToCart(product);
     else addItem(product, 1);
+  };
+
+  const handleAddClick = (e) => {
+    // ✅ clave: evita que el click lo “robe” el contenedor padre (card clickeable / overlay)
+    e.preventDefault();
+    e.stopPropagation();
+    handleAdd();
+  };
+
+  const handleViewClick = (e) => {
+    // ✅ evita que el padre capture y haga otra cosa rara
+    e.preventDefault();
+    e.stopPropagation();
+    onView?.(product);
   };
 
   return (
@@ -43,11 +57,16 @@ export default function ProductCard({ product, onView, onAddToCart }) {
         {/* Promo (as-low-as X/mo) */}
         <AffirmPromo price={product.price} />
 
-        {/* ✅ TILA + Disclosure microcopy (compact, same design) */}
+        {/* ✅ TILA + Disclosure microcopy */}
         <div className="rm-affirm-inline">
           <span>
             Example: $800 = 12 payments of $72.21 at 15% APR, or 4 payments of $200 every 2 weeks. Terms:{' '}
-            <a href="https://www.affirm.com/disclosures" target="_blank" rel="noreferrer">
+            <a
+              href="https://www.affirm.com/disclosures"
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()} // por si el card padre abre modal al click
+            >
               affirm.com/disclosures
             </a>
             .
@@ -55,11 +74,12 @@ export default function ProductCard({ product, onView, onAddToCart }) {
         </div>
       </div>
 
-      <div className="mt-3 d-flex gap-2">
+      {/* ✅ z-index para ganar a cualquier overlay/link por arriba */}
+      <div className="mt-3 d-flex gap-2" style={{ position: 'relative', zIndex: 5 }}>
         <button
           className="btn btn-accent flex-grow-1"
           type="button"
-          onClick={handleAdd}
+          onClick={handleAddClick}
         >
           Add to Cart
         </button>
@@ -67,7 +87,7 @@ export default function ProductCard({ product, onView, onAddToCart }) {
         <button
           className="btn btn-outline-light"
           type="button"
-          onClick={() => onView?.(product)}
+          onClick={handleViewClick}
         >
           View
         </button>
