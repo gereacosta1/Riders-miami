@@ -2,11 +2,12 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useCart } from "../context/CartContext";
-import { normalizeProduct } from "../utils/normalizeProduct"; // si no lo tenés, cambia por la normalización inline
+import { normalizeProduct } from "../utils/normalizeProduct";
+import AffirmPromo from "./AffirmPromo"; // ✅ opcional pero recomendable
 
-export default function ProductModal({ open, product, onClose }) {
+export default function ProductModal({ open, product, onClose, onAdd }) {
   const overlayRef = useRef(null);
-  const dialogRef  = useRef(null);
+  const dialogRef = useRef(null);
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -28,16 +29,41 @@ export default function ProductModal({ open, product, onClose }) {
     if (e.target === overlayRef.current) onClose?.();
   };
 
-  const handleAdd = () => {
-    // normaliza y agrega
-    const p = normalizeProduct ? normalizeProduct(product) : {
-      id: product.id ?? product.sku ?? product.slug ?? String(product.title || 'item').toLowerCase().replace(/\s+/g,'-'),
-      title: product.title ?? product.name ?? 'Product',
+  const normalized =
+    normalizeProduct?.(product) ??
+    {
+      id:
+        product.id ??
+        product.sku ??
+        product.slug ??
+        String(product.title || "item").toLowerCase().replace(/\s+/g, "-"),
+      title: product.title ?? product.name ?? "Product",
       price: Number(product.price ?? product.amount ?? 0),
-      image: product.image || product.img || product.thumbnail || product.picture || product.photo || product.imageUrl || '/img/placeholder.png',
-      ...product
+      image:
+        product.image ||
+        product.img ||
+        product.thumbnail ||
+        product.picture ||
+        product.photo ||
+        product.imageUrl ||
+        "/img/placeholder.png",
+      ...product,
     };
-    addItem(p, 1);
+
+  const priceNumber = Number(normalized.price ?? 0);
+
+  const handleAdd = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+
+    // ✅ Primero: si te pasan handler, usalo (controlado desde afuera)
+    if (typeof onAdd === "function") {
+      onAdd(normalized);
+      return;
+    }
+
+    // ✅ Fallback: si no hay handler, usa el CartContext
+    addItem(normalized, 1);
     onClose?.();
   };
 
@@ -51,61 +77,66 @@ export default function ProductModal({ open, product, onClose }) {
       aria-labelledby="quickview-title"
     >
       <div className="modal-card" tabIndex={-1} ref={dialogRef}>
-        {/* Header */}
         <div className="modal-header">
           <h2 id="quickview-title" className="m-0">
-            {product.title || product.name || 'Product'}
+            {normalized.title}
           </h2>
-          <button className="modal-close" onClick={onClose} aria-label="Close">✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
         </div>
 
-        {/* Body */}
         <div className="modal-body">
           <div className="modal-media">
-            <img
-              src={
-                product.image ||
-                product.img ||
-                product.thumbnail ||
-                product.picture ||
-                product.photo ||
-                product.imageUrl ||
-                '/img/placeholder.png'
-              }
-              alt={product.title || product.name || 'Product image'}
-            />
+            <img src={normalized.image} alt={normalized.title} />
           </div>
 
           <div className="modal-info">
-            {product.category && (
-              <div className="modal-category">{product.category}</div>
+            {normalized.category && (
+              <div className="modal-category">{normalized.category}</div>
             )}
 
             <div className="modal-price">
-              ${Number(product.price ?? 0).toLocaleString()}
+              ${priceNumber.toLocaleString()}
+            </div>
+
+            {/* ✅ (Recomendado) Promo + disclosures en el modal */}
+            <AffirmPromo price={priceNumber} />
+            <div className="rm-affirm-inline" style={{ marginTop: 6 }}>
+              <span>
+                Example: $800 = 12 payments of $72.21 at 15% APR, or 4 payments of
+                $200 every 2 weeks. Terms{" "}
+                <a
+                  href="https://www.affirm.com/disclosures"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  affirm.com/disclosures
+                </a>
+                .
+              </span>
             </div>
 
             <p className="modal-desc">
-              {product.description || 'High-quality product. Finance with Affirm.'}
+              {normalized.description || "High-quality product."}
             </p>
 
-            {/* Tags opcionales */}
-            {Array.isArray(product.tags) && product.tags.length > 0 && (
+            {Array.isArray(normalized.tags) && normalized.tags.length > 0 && (
               <div className="modal-tags">
-                {product.tags.map((t, i) => (
+                {normalized.tags.map((t, i) => (
                   <span key={i} className="modal-tag">{t}</span>
                 ))}
               </div>
             )}
 
             <div className="modal-actions">
-                <button className="btn btn-accent flex-1" onClick={handleAdd}>
-                    Add to Cart
-                </button>
-                <button className="btn btn-outline-light" onClick={onClose}>
-                    Close
-                </button>
-                </div>
+              <button className="btn btn-accent flex-1" onClick={handleAdd}>
+                Add to Cart
+              </button>
+              <button className="btn btn-outline-light" onClick={onClose}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
