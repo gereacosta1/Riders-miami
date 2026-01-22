@@ -15,9 +15,10 @@ export default function Catalog() {
   const handleClose = () => setSelected(null);
 
   const handleAddToCart = (product) => {
-    console.log('Add to cart:', product);
-    setSelected(null);
-  };
+  // ahora esto queda como callback: logs / cerrar modal si está abierto
+  console.log('Added:', product.title);
+  setSelected(null); // solo cierra si estabas en modal
+};
 
   return (
     <>

@@ -13,13 +13,11 @@ export default function ProductGrid({ products, onAddToCart, onView }) {
   const [cat, setCat] = useState('all');
   const [selected, setSelected] = useState(null);
 
-  // Categorías dinámicas basadas en los datos
   const categories = useMemo(() => {
     const set = new Set(products.map((p) => p.category).filter(Boolean));
     return ['all', ...Array.from(set).sort()];
   }, [products]);
 
-  // Búsqueda + filtro por categoría
   const filtered = useMemo(() => {
     const qlc = q.toLowerCase().trim();
     return products.filter((p) => {
@@ -30,18 +28,15 @@ export default function ProductGrid({ products, onAddToCart, onView }) {
     });
   }, [products, q, cat]);
 
-  const handleAddToCart = (p) => {
-    // ✅ si viene handler real por props, úsalo; si no, fallback
-    if (typeof onAddToCart === 'function') onAddToCart(p);
-    else console.log('Add to Cart:', p);
-
-    setSelected(null); // si venías del modal, lo cierra
-  };
-
   const handleView = (p) => {
-    // ✅ si viene handler real por props, úsalo; si no, abre modal local
     if (typeof onView === 'function') onView(p);
     else setSelected(p);
+  };
+
+  // ✅ callback opcional: sirve para cerrar modal y/o avisar al padre
+  const handleAdded = (p) => {
+    if (typeof onAddToCart === 'function') onAddToCart(p);
+    setSelected(null);
   };
 
   return (
@@ -90,13 +85,12 @@ export default function ProductGrid({ products, onAddToCart, onView }) {
             <ProductCard
               key={p.id}
               product={p}
-              onAddToCart={handleAddToCart}
+              onAddToCart={handleAdded}   // ✅ solo callback; el add real lo hace ProductCard via addItem()
               onView={handleView}
             />
           ))}
         </div>
 
-        {/* Mensaje vacío (útil, no molesto) */}
         {filtered.length === 0 && (
           <div className="text-white-50 mt-4" style={{ opacity: 0.9 }}>
             No results. Try a different search or category.
@@ -104,12 +98,11 @@ export default function ProductGrid({ products, onAddToCart, onView }) {
         )}
       </section>
 
-      {/* Modal local sólo si NO se está controlando desde afuera */}
       <ProductModal
         open={!!selected}
         product={selected}
         onClose={() => setSelected(null)}
-        onAdd={handleAddToCart}
+        onAdd={handleAdded}
       />
     </>
   );
