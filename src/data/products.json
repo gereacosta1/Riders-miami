@@ -70,9 +70,8 @@
     },
     "inStock": true,
     "badge": "Hot"
-  }
-  ,
-   {
+  },
+  {
     "id": 6,
     "title": "Freego Shotgun F2 Pro Max",
     "category": "motorcycle",
@@ -85,9 +84,8 @@
     },
     "inStock": true,
     "badge": "Hot"
-  }
-  ,
-   {
+  },
+  {
     "id": 7,
     "title": "Freego Shotgun Prime F2 Pro",
     "category": "motorcycle",
@@ -100,9 +98,8 @@
     },
     "inStock": true,
     "badge": "Hot"
-  }
-  ,
-   {
+  },
+  {
     "id": 8,
     "title": "Freego X2 Dirt Master Off-Road",
     "category": "motorcycle",
@@ -115,9 +112,8 @@
     },
     "inStock": true,
     "badge": "Hot"
-  }
-  ,
-   {
+  },
+  {
     "id": 9,
     "title": "Segway Ninebot S2 Self-Balancing Scooter",
     "category": "scooter",
@@ -130,5 +126,136 @@
     },
     "inStock": true,
     "badge": "Hot"
+  },
+
+  {
+    "id": "s1",
+    "title": "EBL Portable Power Station 2400W (1843Wh)",
+    "category": "solar",
+    "price": 579.98,
+    "image": "/solar/ebl-ps-2400w-1843wh.webp",
+    "description": "Portable power station for home backup, camping and off-grid use. Multiple AC outlets and fast charging.",
+    "specs": {
+      "highlights": ["2400W inverter", "1843Wh capacity", "Multiple AC/USB outputs"]
+    },
+    "inStock": true,
+    "badge": "Deal"
+  },
+  {
+    "id": "s2",
+    "title": "FOSSIBOT F2400 Power Station 2400W (2048Wh)",
+    "category": "solar",
+    "price": 599,
+    "image": "/solar/fossibot-f2400-2048wh.webp",
+    "description": "High-capacity LiFePO4 power station with strong AC output and solar charging support.",
+    "specs": {
+      "highlights": ["2400W (peak higher)", "2048Wh LiFePO4", "Solar charging supported"]
+    },
+    "inStock": true,
+    "badge": "Popular"
+  },
+  {
+    "id": "s3",
+    "title": "EcoFlow DELTA Pro (3600Wh)",
+    "category": "solar",
+    "price": 1599,
+    "image": "/solar/ecoflow-delta-pro-3600wh.jpg",
+    "description": "Expandable home backup power with fast charging and strong AC output for demanding loads.",
+    "specs": {
+      "highlights": ["3600Wh capacity", "Expandable ecosystem", "Fast charging"]
+    },
+    "inStock": true,
+    "badge": "Featured"
+  },
+  {
+    "id": "s4",
+    "title": "EcoFlow DELTA Pro 3 (4096Wh)",
+    "category": "solar",
+    "price": 1999,
+    "image": "/solar/ecoflow-delta-pro-3-4096wh.jpg",
+    "description": "Next-gen LiFePO4 home backup with 120/240V output and high surge capacity (model dependent).",
+    "specs": {
+      "highlights": ["4096Wh LiFePO4", "120/240V output", "High surge capacity"]
+    },
+    "inStock": true,
+    "badge": "New"
+  },
+  {
+    "id": "s5",
+    "title": "OUPES 6000W Power Station (4096Wh)",
+    "category": "solar",
+    "price": 1699.98,
+    "image": "/solar/oupes-6000-4096wh.webp",
+    "description": "High-output station for bigger appliances. Designed for backup and off-grid setups.",
+    "specs": {
+      "highlights": ["6000W output (model dependent)", "4096Wh LiFePO4", "Expandable options"]
+    },
+    "inStock": true,
+    "badge": "High Power"
+  },
+  {
+    "id": "s6",
+    "title": "EcoFlow Smart Home Panel 2",
+    "category": "solar",
+    "price": 1599,
+    "image": "/solar/ecoflow-smart-home-panel-2.webp",
+    "description": "Smart transfer panel to integrate EcoFlow systems with home circuits (compatible models required).",
+    "specs": {
+      "highlights": ["Smart load management", "Home integration", "EcoFlow ecosystem"]
+    },
+    "inStock": true,
+    "badge": "Pro"
+  },
+  {
+    "id": "s7",
+    "title": "EcoFlow DELTA Pro Ultra",
+    "category": "solar",
+    "price": 5999.95,
+    "image": "/solar/ecoflow-delta-pro-ultra.webp",
+    "description": "High-end expandable whole-home backup ecosystem (pricing varies by configuration).",
+    "specs": {
+      "highlights": ["Whole-home capable (config)", "Expandable", "Premium system"]
+    },
+    "inStock": true,
+    "badge": "Ultra"
+  },
+  {
+    "id": "s8",
+    "title": "Portable Solar Panel 450W (38V) Foldable",
+    "category": "solar",
+    "price": 459.99,
+    "image": "/solar/panel-450w-38v-fold.jpg",
+    "description": "Foldable high-watt solar panel for fast charging compatible power stations (check connectors).",
+    "specs": {
+      "highlights": ["450W rated", "38V", "Foldable portable design"]
+    },
+    "inStock": true,
+    "badge": "Panel"
+  },
+  {
+    "id": "s9",
+    "title": "LiFePO4 Battery 12V 100Ah (Bluetooth)",
+    "category": "solar",
+    "price": 169.99,
+    "image": "/solar/lifepo4-12v-100ah-bt.webp",
+    "description": "12V 100Ah LiFePO4 battery with Bluetooth monitoring and integrated BMS.",
+    "specs": {
+      "highlights": ["12V 100Ah", "Bluetooth monitoring", "BMS integrated"]
+    },
+    "inStock": true,
+    "badge": "Bluetooth"
+  },
+  {
+    "id": "s10",
+    "title": "LiFePO4 Battery 12V 100Ah (Group 31)",
+    "category": "solar",
+    "price": 112.99,
+    "image": "/solar/lifepo4-12v-100ah-group31.avif",
+    "description": "Group 31 form-factor 12V 100Ah LiFePO4 battery with integrated BMS for RV/solar setups.",
+    "specs": {
+      "highlights": ["12V 100Ah", "Group 31 size", "BMS integrated"]
+    },
+    "inStock": true,
+    "badge": "Value"
   }
 ]

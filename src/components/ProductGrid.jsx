@@ -1,5 +1,5 @@
 // src/components/ProductGrid.jsx
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 
@@ -7,6 +7,13 @@ const startCase = (s) =>
   String(s || '')
     .replace(/[-_]/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
+
+function getQueryParams() {
+  const sp = new URLSearchParams(window.location.search || '');
+  const cat = (sp.get('cat') || '').trim();
+  const q = (sp.get('q') || '').trim();
+  return { cat, q };
+}
 
 export default function ProductGrid({ products, onAddToCart, onView }) {
   const [q, setQ] = useState('');
@@ -17,6 +24,27 @@ export default function ProductGrid({ products, onAddToCart, onView }) {
     const set = new Set(products.map((p) => p.category).filter(Boolean));
     return ['all', ...Array.from(set).sort()];
   }, [products]);
+
+  // ✅ Lee ?cat=solar / ?q=xxx al montar, y también cuando cambia el historial (tu App dispara popstate)
+  useEffect(() => {
+    const applyFromUrl = () => {
+      const { cat: catParam, q: qParam } = getQueryParams();
+
+      if (qParam) setQ(qParam);
+
+      if (catParam) {
+        // Acepta "all" o una categoría válida (case-insensitive)
+        const want = catParam.toLowerCase();
+        const match = categories.find((c) => String(c).toLowerCase() === want);
+        if (match) setCat(match);
+        else if (want === 'all') setCat('all');
+      }
+    };
+
+    applyFromUrl();
+    window.addEventListener('popstate', applyFromUrl);
+    return () => window.removeEventListener('popstate', applyFromUrl);
+  }, [categories]);
 
   const filtered = useMemo(() => {
     const qlc = q.toLowerCase().trim();
@@ -85,7 +113,7 @@ export default function ProductGrid({ products, onAddToCart, onView }) {
             <ProductCard
               key={p.id}
               product={p}
-              onAddToCart={handleAdded}   // ✅ solo callback; el add real lo hace ProductCard via addItem()
+              onAddToCart={handleAdded} // ✅ solo callback; el add real lo hace ProductCard via addItem()
               onView={handleView}
             />
           ))}

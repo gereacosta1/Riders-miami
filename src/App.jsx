@@ -11,6 +11,7 @@ import { CartProvider } from './context/CartContext';
 import Contact from './pages/Contact';
 import Footer from './components/Footer';
 import FloatingCartButton from './components/FloatingCartButton';
+import Solar from './pages/Solar';
 
 function useRoute() {
   const [path, setPath] = useState(window.location.pathname);
@@ -18,12 +19,20 @@ function useRoute() {
   useEffect(() => {
     const onClick = (e) => {
       const a = e.target.closest('a[href]');
-      if (a && a.getAttribute('href').startsWith('/')) {
-        e.preventDefault();
-        const to = a.getAttribute('href');
-        window.history.pushState({}, '', to);
-        setPath(to);
-      }
+      if (!a) return;
+
+      const href = a.getAttribute('href') || '';
+      // Solo interceptamos rutas internas tipo "/algo"
+      if (!href.startsWith('/')) return;
+
+      // Evita interceptar archivos (por si linkean a /logo.png, etc.)
+      const looksLikeFile = /\.[a-zA-Z0-9]+($|\?)/.test(href);
+      if (looksLikeFile) return;
+
+      e.preventDefault();
+      window.history.pushState({}, '', href);
+      setPath(window.location.pathname);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const onPop = () => setPath(window.location.pathname);
@@ -46,6 +55,7 @@ export default function App() {
 
   let Page = Home;
   if (path === '/catalog') Page = Catalog;
+  else if (path === '/solar') Page = Solar;
   else if (path === '/checkout') Page = Checkout;
   else if (path === '/order-confirmed') Page = OrderConfirmed;
   else if (path === '/contact') Page = Contact;

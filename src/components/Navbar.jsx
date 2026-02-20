@@ -24,9 +24,15 @@ export default function Navbar({ onCartClick }) {
           <a href="/" className="nav-item">
             Home
           </a>
+
           <a href="/catalog" className="nav-item">
             Catalog
           </a>
+
+          <a href="/solar" className="nav-item">
+            Solar energy
+          </a>
+
           <a href="/contact" className="nav-item">
             Contact
           </a>
@@ -35,6 +41,7 @@ export default function Navbar({ onCartClick }) {
             className="btn btn-sm btn-outline-light position-relative cart-btn"
             onClick={onCartClick}
             aria-label="Open cart"
+            type="button"
           >
             Cart
             {itemCount > 0 && (
