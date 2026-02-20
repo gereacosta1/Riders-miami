@@ -17,6 +17,8 @@ export default function Solar() {
     });
   }, [products]);
 
+  const hasSolar = solar.length > 0;
+
   const handleView = (product) => setSelected(product);
   const handleClose = () => setSelected(null);
 
@@ -28,7 +30,6 @@ export default function Solar() {
 
   const goCatalogSolar = (e) => {
     e?.preventDefault?.();
-    // ✅ Navega directo con query param para filtrar
     window.history.pushState({}, '', '/catalog?cat=solar');
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -54,25 +55,27 @@ export default function Solar() {
             >
               Go to catalog solar
             </a>
-
             <a href="/catalog" className="btn btn-outline-light btn-sm">
               Back to catalog
             </a>
           </div>
         </div>
 
-        {/* Bloques informativos (mismo lenguaje visual que Catalog) */}
+        {/* Info row */}
         <div className="row g-3 mt-3">
-          <div className="col-12 col-md-6">
-            <div className="card-dark p-3 h-100">
-              <div className="fw-semibold">Home backup ready</div>
-              <div className="text-white-50 small mt-1" style={{ lineHeight: 1.5 }}>
-                Add items in <code>src/data/products.json</code> with <code>"category": "solar"</code>.
+          {/* ✅ Solo mostrar ayuda si NO hay productos solar */}
+          {!hasSolar && (
+            <div className="col-12 col-md-6">
+              <div className="card-dark p-3 h-100">
+                <div className="fw-semibold">Home backup ready</div>
+                <div className="text-white-50 small mt-1" style={{ lineHeight: 1.5 }}>
+                  Add items in <code>src/data/products.json</code> with <code>"category": "solar"</code>.
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="col-12 col-md-6">
+          <div className={`col-12 ${hasSolar ? '' : 'col-md-6'}`}>
             <div className="card-dark p-3 h-100">
               <div className="fw-semibold">Financing with Affirm</div>
               <div className="text-white-50 small mt-1" style={{ lineHeight: 1.5 }}>
@@ -82,7 +85,7 @@ export default function Solar() {
           </div>
         </div>
 
-        {solar.length ? (
+        {hasSolar ? (
           <>
             <div className="grid-products mt-4">
               {solar.map((p) => (
